@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TRAFFIC FLOW OPTIMIZER</title><style>
+:root{--bg:#070B14;--b2:#0D1423;--pn:#111C2D;--cy:#00E5FF;--bl:#367BFF;--gr:#39FF88;--am:#FFBF47;--rd:#FF4D5A;--tx:#F0F6FF;--t2:#92A5C2;--ln:#1f3350}
+*{box-sizing:border-box}
+body{margin:0;display:flex;min-height:100vh;background:linear-gradient(rgba(54,123,255,.05) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,rgba(54,123,255,.05) 1px,transparent 1px) 0 0/32px 32px,var(--bg);color:var(--tx);font:14px/1.5 "Segoe UI",system-ui,sans-serif}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,229,255,.025) 0 1px,transparent 1px 4px)}
+.nsc::after{display:none}
+#nav{width:190px;flex:none;position:sticky;top:0;height:100vh;background:var(--b2);border-right:1px solid var(--ln);padding:14px 10px;display:flex;flex-direction:column;gap:4px;z-index:5}
+.lg{font-weight:800;letter-spacing:.12em;color:var(--cy);margin:4px 8px 14px;line-height:1.2;text-shadow:0 0 12px rgba(0,229,255,.5)}
+.tb{background:none;border:1px solid transparent;color:var(--t2);padding:8px 10px;text-align:left;border-radius:7px;cursor:pointer;font:600 12px inherit;letter-spacing:.06em;white-space:nowrap}
+.tb:hover{color:var(--tx)}.tb.on{color:var(--cy);border-color:var(--cy);background:rgba(0,229,255,.08);box-shadow:0 0 10px rgba(0,229,255,.2)}
+main{flex:1;min-width:0;padding:18px}.tab{display:none}.tab.on{display:block}
+h1{font-size:34px;margin:4px 0;letter-spacing:.08em;color:var(--cy)}h2{margin:0 0 12px;letter-spacing:.1em;font-size:18px}h3{margin:0 0 8px;font-size:13px;letter-spacing:.1em;color:var(--cy)}
+.p{background:rgba(17,28,45,.92);border:1px solid var(--ln);border-radius:10px;padding:14px;box-shadow:0 0 14px rgba(0,229,255,.08);margin-bottom:12px}
+.g{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:12px}.g2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.hero{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:center}
+.sub{color:var(--t2);letter-spacing:.14em}.tg{color:var(--gr);font-weight:600}.k{color:var(--t2);font-size:11px;letter-spacing:.12em}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.b{background:#0f2a44;border:1px solid var(--cy);color:var(--cy);padding:7px 12px;border-radius:7px;cursor:pointer;font:600 12px inherit;letter-spacing:.05em}
+.b:hover{background:#12395c}.b:disabled{opacity:.35;cursor:not-allowed}.b.p{background:var(--cy);color:#001}.b.w{border-color:var(--am);color:var(--am)}
+.kv{background:var(--b2);border:1px solid var(--ln);border-radius:8px;padding:8px 10px}.kv small{display:block;color:var(--t2);font-size:11px;letter-spacing:.06em}.kv b{font-size:18px}
+.cw{perspective:900px;overflow:hidden;border-radius:10px;border:1px solid var(--ln);background:#0A1120;max-width:640px;width:100%}
+canvas{touch-action:none;cursor:grab;width:100%;height:auto;display:block;transition:transform .5s;transform-origin:50% 60%}.p3 canvas{transform:rotateX(52deg) scale(.95) translateY(-6%)}
+.lv{display:grid;gap:12px;grid-template-columns:minmax(300px,640px) minmax(260px,1fr);align-items:start}
+.log{font:11px/1.5 Consolas,monospace;max-height:220px;overflow:auto;color:var(--t2)}.log b{color:var(--cy)}
+input,select{background:var(--b2);color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:6px;font:inherit;width:100%}
+#fm{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:10px 0}label{font-size:12px;color:var(--t2)}
+.row label{display:flex;gap:6px;align-items:center;width:auto}.row input[type=checkbox]{width:auto}.row select{width:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--ln);padding:6px 8px;text-align:left}th{color:var(--cy);font-size:12px}
+.gd{color:var(--gr);font-weight:600}.bd{color:var(--rd);font-weight:600}
+.br{display:flex;align-items:center;gap:8px;margin:4px 0}.br span{width:68px;font-size:12px;color:var(--t2)}.br i{height:12px;border-radius:3px;display:block;min-width:2px}.br em{font-style:normal;font-size:12px}
+.bar{height:10px;background:var(--b2);border-radius:5px;overflow:hidden;flex:1}.bar i{display:block;height:100%;background:var(--cy);transition:width .2s}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+#msg{position:fixed;bottom:14px;right:14px;max-width:360px;padding:10px 14px;border-radius:8px;background:#0f2a44;border:1px solid var(--cy);z-index:30;display:none}#msg.e{border-color:var(--rd)}
+#ev{position:fixed;inset:0;background:var(--bg);z-index:20;overflow:auto;padding:16px}.evh{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;color:var(--t2)}.evh b{color:var(--cy);font-size:18px;letter-spacing:.1em}.evw{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}.evw>div{flex:1;min-width:300px}
+pre{white-space:pre-wrap;font:12px/1.5 Consolas,monospace;color:var(--tx);margin:0}ul{margin:6px 0;padding-left:18px}
+.nm *{animation:none!important;transition:none!important}
+@media(max-width:820px){body{flex-direction:column}#nav{width:100%;height:auto;flex-direction:row;overflow-x:auto;padding:8px}.lg{display:none}.lv{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<nav id="nav"></nav>
+<main>
+<section class="tab on" id="t0">
+<div class="p hero"><div><span class="k">HCL JIGSAW 7.0 · ROUND 2 · DIGITAL PROTOTYPE</span><h1>TRAFFIC FLOW OPTIMIZER</h1><div class="sub">Adaptive Urban Traffic Intelligence System</div><p class="tg">Smarter Signals. Shorter Queues. Better Cities.</p>
+<div class="row"><button class="b p" onclick="go(3)">OPEN SIMULATION</button><button class="b" onclick="cmpNow()">RUN COMPARISON</button><button class="b w" onclick="go(5)">VIEW EVIDENCE</button></div>
+<small class="k">The preview mirrors the live simulation. It stays empty until a live run starts.</small></div>
+<div class="cw"><canvas id="cv1" width="600" height="600"></canvas></div></div>
+<div class="g2"><div class="p"><h3>THE PROBLEM</h3><p>Fixed-timer signals give every road the same green time, whatever is waiting. When one road is busy and the cross road is nearly empty, vehicles pile up on the busy road while green time is spent on empty lanes. In dense Indian city corridors this wastes time and fuel.</p></div>
+<div class="p"><h3>OUR SOLUTION</h3><p>The adaptive controller reads the current queue on each approach, adds a waiting-time priority so no road is ignored, and gives green to the movement group with the greater demand. Minimum green, maximum green, amber and all-red clearance always apply. It never sees future arrivals.</p><small class="k">Any improvement is reported only from measured simulation runs. No improvement figure is assumed.</small></div></div>
+<div class="g2"><div class="p"><h3>SYSTEM STATUS · PROTOTYPE READINESS</h3><div id="rdy"></div></div>
+<div class="p"><h3>CAPABILITIES</h3><ul><li>Seeded, reproducible discrete-time traffic simulation</li><li>Fixed-timer baseline and adaptive controller under identical rules</li><li>Paired comparison on identical arrivals, plus 10-seed trials</li><li>Live intersection view with signals, queues and event log</li><li>Evidence Studio and exportable report</li></ul><h3>WORKFLOW</h3><div class="row" id="wf"></div></div></div>
+</section>
+<section class="tab" id="t1"><h2>OVERVIEW</h2><div id="ovc" class="g"></div><div class="p"><h3>APPROACH DEMAND AND SIGNAL STATE</h3><div id="ovb"></div></div></section>
+<section class="tab" id="t2"><h2>LIVE VIEW</h2><div class="lv"><div><div class="cw" id="cw"><canvas id="cv2" width="600" height="600"></canvas></div></div><div>
+<div class="p"><div class="row"><select id="lm"><option value="fixed">Fixed-timer</option><option value="adaptive" selected>Adaptive</option></select><button class="b p" id="bs" onclick="startLive()">START</button><button class="b" onclick="pz(1)">PAUSE</button><button class="b" onclick="pz(0)">RESUME</button><button class="b w" onclick="resetLive()">RESET</button></div>
+<div class="row"><label>Speed <select id="sp" onchange="S.speed=+this.value"><option>1</option><option>2</option><option selected>5</option><option>10</option><option>25</option><option>50</option></select></label><button class="b" onclick="S.p3^=1">3D / TOP VIEW (drag view to rotate)</button><button class="b" onclick="$('#cw').requestFullscreen&&$('#cw').requestFullscreen()">FULL SCREEN</button></div>
+<div class="row"><label><input type="checkbox" id="ol" onchange="ov()">Vehicle labels</label><label><input type="checkbox" id="oq" checked onchange="ov()">Queue overlays</label><label><input type="checkbox" id="ot" checked onchange="ov()">Signal timing</label><label><input type="checkbox" id="od" checked onchange="ov()">Demand bars</label></div></div>
+<div class="g" id="lk"></div><div class="p"><h3>EVENT LOG</h3><div class="log" id="lg"></div></div></div></div></section>
+<section class="tab" id="t3"><h2>SIMULATION LABORATORY</h2><div class="p"><div class="row"><label>Traffic preset <select id="pre"><option value="moderate">Moderate</option><option value="light">Light</option><option value="heavy">Heavy</option><option value="">Custom (edit values)</option></select></label><span id="rt" class="k"></span></div>
+<div id="fm"></div><small class="k">Timing values are configurable prototype assumptions, not official Indian traffic-engineering standards. Seed and settings fully determine the arrival sequence.</small>
+<div class="row"><button class="b p" id="b1" onclick="runOne('fixed')">RUN FIXED-TIMER</button><button class="b p" id="b2" onclick="runOne('adaptive')">RUN ADAPTIVE</button><button class="b p" id="b3" onclick="runBoth()">RUN BOTH &amp; COMPARE</button><button class="b" id="b4" onclick="go(2);startLive()">WATCH LIVE RUN</button></div>
+<div class="row"><button class="b" onclick="pz(1)">PAUSE</button><button class="b" onclick="pz(0)">RESUME</button><button class="b w" onclick="resetLive()">RESET</button><button class="b" onclick="resetLive();go(2);startLive()">REPEAT SCENARIO (same seed)</button><button class="b" onclick="newSeed()">GENERATE NEW SCENARIO</button><button class="b" onclick="expJSON()">EXPORT RUN DATA</button></div>
+<div class="row"><span class="k">LIVE RUN PROGRESS</span><div class="bar"><i id="pg" style="width:0"></i></div></div><small class="k">Every completed run is saved automatically to the session history (REPORTS).</small></div>
+<div class="p"><h3>MODEL ASSUMPTIONS</h3><ul><li>Time step 1 s. Arrivals per approach: each second a vehicle arrives with probability rate/60 (Bernoulli approximation of a Poisson process), from a seeded generator.</li><li>Two movement groups (North–South, East–West); only one group is green at a time. Green → amber → all-red → other group.</li><li>Each green approach discharges one vehicle per headway. A vehicle counts as served when it crosses the stop line; its departure is 3 s later.</li><li>Full queues block arrivals; blocked vehicles are counted separately. No warm-up period is used; both controllers start with North–South green and empty queues.</li></ul></div></section>
+<section class="tab" id="t4"></section>
+<section class="tab" id="t5"><h2>EVIDENCE STUDIO</h2><div class="p"><p>Prepares clean views for your three prototype screenshots. Nothing is generated or faked: each view shows live application data, and you capture it with Win+Shift+S (Windows) or your browser's screenshot tool. Press Esc to leave a view.</p></div>
+<div class="g2"><div class="p"><h3>EVIDENCE 1 · OVERALL DIGITAL PROTOTYPE</h3><p>Full intersection with vehicles, queues, signal states, title, mode and status.</p><button class="b p" onclick="openEv(1)">PREPARE VIEW 01</button><p id="e1" class="k"></p></div>
+<div class="p"><h3>EVIDENCE 2 · ADAPTIVE CONTROL IN ACTION</h3><p>The adaptive controller's latest real decision, with queues, scores and the reason.</p><button class="b p" onclick="openEv(2)">PREPARE VIEW 02</button><p id="e2" class="k"></p></div>
+<div class="p"><h3>EVIDENCE 3 · MEASURED COMPARISON</h3><p>Fixed-timer versus adaptive results from a completed paired run.</p><button class="b p" onclick="openEv(3)">PREPARE VIEW 03</button><p id="e3" class="k"></p></div></div></section>
+<section class="tab" id="t6"><h2>REPORTS</h2><div class="p"><div class="row"><button class="b" onclick="expJSON()">EXPORT JSON</button><button class="b" onclick="expCSV()">EXPORT VEHICLE CSV</button><button class="b" onclick="print()">PRINT / SAVE PDF</button></div><pre id="rp"></pre></div><div class="p"><h3>SESSION RUN HISTORY</h3><div id="hs"></div></div></section>
+<section class="tab" id="t7"><h2>SETTINGS</h2><div class="p"><div class="row"><label><input type="checkbox" id="s1" checked onchange="document.body.classList.toggle('nsc',!this.checked)">Scan-line effect</label><label><input type="checkbox" id="s2" onchange="document.body.classList.toggle('nm',this.checked)">Reduce motion</label></div><div class="row"><button class="b w" onclick="S.runs=[];S.trials=null;msg('Session history cleared.')">CLEAR SESSION HISTORY</button></div><small class="k">Simulation parameters are set in SIMULATION. The page also respects your system's reduced-motion setting.</small></div></section>
+<section class="tab" id="t8"><h2>ABOUT</h2><div class="p"><h3>ADAPTIVE ALGORITHM</h3><ol><li>Demand score of a group = vehicles queued on its two approaches + 0.1 × longest head-of-queue wait (seconds). The wait term stops any road being ignored.</li><li>No decision before the minimum green has elapsed. Green always ends at the maximum green.</li><li>After the minimum, green ends early if the other group's score exceeds 1.25 × the current group's score + 2.</li><li>Amber and all-red clearance always run before switching. Ties and starts favour North–South.</li><li>Only current queues and waits are used; future arrivals are never known.</li></ol>
+<h3>FAIRNESS</h3><p>A paired comparison feeds both controllers the same pre-generated arrival sequence and applies identical capacity, headway, crossing, amber, all-red and end-of-run rules. Only the green-time decision differs.</p>
+<h3>LIMITATIONS</h3><ul><li>Results are simulated, not measured on real roads. Single straight-through lane per approach; no turns, pedestrians or incidents.</li><li>No statistical significance test is implemented; trial summaries are descriptive only.</li><li>Adaptive control may lose to fixed timing in some scenarios; the application reports this honestly.</li></ul></div></section>
+</main><div id="ev" hidden></div><div id="msg"></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const NM=['North','South','East','West'],A=['N','S','E','W'],GN=['North–South','East–West'],GRP=[[0,1],[2,3]],CROSS=3,SX=-84,TH=[Math.PI/2,-Math.PI/2,Math.PI,0],SC={G:'#39FF88',Y:'#FFBF47',R:'#FF4D5A'},PAL=['#00E5FF','#367BFF','#F0F6FF','#B07CFF','#FF8FB1','#7EE0C3'];
+const PRE={light:[4,4,6,6],moderate:[8,6,14,10],heavy:[12,10,22,18]};
+const FL=[['rn','North arrivals (veh/min)',8,0,30,1],['rs','South arrivals (veh/min)',6,0,30,1],['re','East arrivals (veh/min)',14,0,30,1],['rw','West arrivals (veh/min)',10,0,30,1],['dur','Duration (s)',900,60,3600,1],['seed','Seed',2026,0,999999,1],['cap','Max queue capacity (veh)',30,1,200,1],['hw','Discharge headway (s)',2,1,10,0.5],['fg','Fixed green (s)',30,1,120,1],['mn','Adaptive min green (s)',10,1,120,1],['mx','Adaptive max green (s)',45,1,180,1],['am','Amber (s)',3,1,10,1],['ar','All-red clearance (s)',1,1,10,1]];
+const S={runs:[],L:null,paused:false,speed:5,fr:0,acc:0,vis:{},trials:null,ev:0,tab:0,p3:1,yaw:.6,pit:.9,o:{lab:0,q:1,tm:1,dm:1}};
+const n1=(v,d=1)=>v==null?'—':(+v).toFixed(d);
+function mkRng(s){s=s>>>0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function schedule(c){const r=mkRng(c.seed),a=[];for(let t=0;t<c.dur;t++){a[t]=[];for(let i=0;i<4;i++)if(r()<c.rate[i]/60)a[t].push(i)}return a}
+function sig(L,i){if(!L)return'0';const g=i<2?0:1;return g!=L.g||L.st=='R'?'R':L.st}
+class Sim{
+constructor(c,mode,sch){Object.assign(this,{c,mode,sch:sch||schedule(c),t:0,q:[[],[],[],[]],cr:[],rec:[],n:0,blocked:0,cd:[0,0,0,0],g:0,st:'G',el:0,log:[],qs:[],qsum:0,maxQ:0,changes:0,gs:[0,0],gc:[1,0],dec:null,viol:0,gl:[],done:false});this.ev('Run started: '+GN[0]+' green ('+mode+' control)')}
+ev(s){this.log.push([this.t,s]);if(this.log.length>300)this.log.shift()}
+sc(g){let s=0,w=0;for(const i of GRP[g]){s+=this.q[i].length;if(this.q[i][0])w=Math.max(w,this.t-this.q[i][0].a)}return s+0.1*w}
+step(){if(this.done)return;const c=this.c,t=this.t;
+for(const i of this.sch[t]){if(this.q[i].length>=c.cap){this.blocked++;if(this.blocked%10==1)this.ev(NM[i]+' queue full: arrival blocked (total blocked '+this.blocked+')')}else{this.q[i].push({id:++this.n,a:t,i});if(this.q[i].length%5==0)this.ev(NM[i]+' queue demand reached '+this.q[i].length)}}
+if(this.st=='G')for(const i of GRP[this.g]){this.cd[i]=Math.min(1,this.cd[i]+1/c.hw);if(this.cd[i]>=1-1e-9&&this.q[i].length){if(sig(this,i)!='G')this.viol++;const v=this.q[i].shift();v.s=t;v.d=t+CROSS;v.w=t-v.a;v.y=v.d-v.a;this.rec.push(v);this.cr.push(v);this.cd[i]-=1;if(v.id%10==0)this.ev('Vehicle #'+v.id+' passed the junction after waiting '+v.w+' s')}}
+while(this.cr.length&&this.cr[0].d<=t)this.cr.shift();
+this.el++;
+if(this.st=='G'){this.gs[this.g]++;let sw=false,why='';
+if(this.mode=='fixed'){if(this.el>=c.fg){sw=true;why='fixed green time elapsed'}}
+else{const cu=this.sc(this.g),ot=this.sc(1-this.g);
+if(this.el>=c.mx){sw=true;why='maximum green reached'}
+else if(this.el>=c.mn&&ot>1.25*cu+2){sw=true;why='other group score '+ot.toFixed(1)+' > 1.25 × current '+cu.toFixed(1)+' + 2 (minimum green met)'}
+if(sw){this.dec={t:t,from:this.g,to:1-this.g,q:this.q.map(x=>x.length),s:this.g?[ot,cu]:[cu,ot],why:why,el:this.el};this.ev('Adaptive controller selects '+GN[1-this.g]+': queues N'+this.q[0].length+' S'+this.q[1].length+' E'+this.q[2].length+' W'+this.q[3].length+'; scores '+this.dec.s.map(x=>x.toFixed(1)).join(' / ')+'; '+why)}}
+if(sw){if(this.mode=='fixed')this.ev('Fixed timer ends '+GN[this.g]+' green');this.gl.push([this.g,this.el]);this.st='Y';this.el=0;this.ev(GN[this.g]+' amber')}}
+else if(this.st=='Y'){if(this.el>=c.am){this.st='R';this.el=0;this.ev('All-red clearance')}}
+else if(this.el>=c.ar){this.g=1-this.g;this.st='G';this.el=0;this.changes++;this.gc[this.g]++;this.cd=[0,0,0,0];this.ev('Phase change: '+GN[this.g]+' green')}
+let tot=0;for(const q of this.q){tot+=q.length;if(q.length>this.maxQ)this.maxQ=q.length}
+this.qsum+=tot;this.qs.push(tot);this.t++;if(this.t>=c.dur){this.done=true;this.ev('Run complete')}}
+m(){const t=this.t||1,w=this.rec.map(v=>v.w).sort((a,b)=>a-b),n=w.length,sw=w.reduce((a,b)=>a+b,0);let rem=0,rw=0;for(const q of this.q){rem+=q.length;for(const v of q)rw+=this.t-v.a}
+const tw=sw+rw;return{gen:this.n+this.blocked,served:n,rem,blocked:this.blocked,avgW:n?sw/n:null,medW:n?(n%2?w[(n-1)/2]:(w[n/2-1]+w[n/2])/2):null,avgAll:this.n?tw/this.n:null,maxQ:this.maxQ,avgQ:this.qsum/t,totW:tw,thr:n/(t/60),sys:n?this.rec.reduce((a,v)=>a+v.y,0)/n:null,chg:this.changes,avgG:this.gs.map((s,i)=>this.gc[i]?s/this.gc[i]:null),t:this.t}}}
+function run(mode,c,sch){const s=new Sim(c,mode,sch);while(!s.done)s.step();return s}
+function imp(b,a,hb){if(b==null||a==null||b===0)return null;const r=hb?(a-b)/b*100:(b-a)/b*100;return isFinite(r)?r:null}
+const fi=v=>v==null?'n/a':`<span class="${v>0.05?'gd':v<-0.05?'bd':''}">${v>0?'+':''}${v.toFixed(1)}% ${v>0.05?'better':v<-0.05?'worse':'no change'}</span>`;
+function readCfg(){const e=[],v={};for(const[id,l,d,lo,hi]of FL){const x=parseFloat($('#'+id).value);if(!isFinite(x)||x<lo||x>hi)e.push(l+' must be between '+lo+' and '+hi+'.');else if(id!='hw'&&x%1)e.push(l+' must be a whole number.');v[id]=x}
+if(v.mn>v.mx)e.push('Adaptive maximum green must not be lower than the minimum green.');
+return{e,c:{rate:[v.rn,v.rs,v.re,v.rw],dur:v.dur,seed:v.seed,cap:v.cap,hw:v.hw,fg:v.fg,mn:v.mn,mx:v.mx,am:v.am,ar:v.ar}}}
+const label=c=>`seed ${c.seed} · N/S/E/W ${c.rate.join('/')} veh/min · ${c.dur}s`;
+function addRun(s){S.runs.push({id:S.runs.length+1,mode:s.mode,key:JSON.stringify(s.c),c:s.c,m:s.m(),qs:s.qs,rec:s.rec,at:new Date().toLocaleTimeString()})}
+function pk(r,md){return[...S.runs].reverse().find(x=>x.key==r.key&&x.mode==md)}
+function pairOf(){const r=S.runs[S.runs.length-1];if(!r)return null;const f=pk(r,'fixed'),a=pk(r,'adaptive');return f&&a?{f,a}:null}
+function msg(t,bad){const m=$('#msg');m.textContent=t;m.className=bad?'e':'';m.style.display='block';clearTimeout(msg.t);msg.t=setTimeout(()=>m.style.display='none',4500)}
+function runOne(md){const{e,c}=readCfg();if(e.length)return msg(e[0],1);addRun(run(md,c));msg(md+' run complete.');if(S.tab==4)renderRes()}
+function runBoth(){const{e,c}=readCfg();if(e.length)return msg(e[0],1);const sch=schedule(c);addRun(run('fixed',c,sch));addRun(run('adaptive',c,sch));msg('Paired comparison complete (identical arrivals).');go(4)}
+function cmpNow(){const{e}=readCfg();if(e.length){go(3);return msg(e[0],1)}runBoth()}
+function newSeed(){$('#seed').value=Math.floor(Math.random()*999999);msg('New seed '+$('#seed').value+' set. Run again to generate the scenario.')}
+function startLive(){const{e,c}=readCfg();if(e.length){go(3);return msg(e[0],1)}if(S.L&&!S.L.done)return;S.L=new Sim(c,$('#lm').value);S.paused=false;S.vis={};S.acc=0;ui()}
+function resetLive(){S.L=null;S.paused=false;S.vis={};S.acc=0;ui()}
+function pz(v){if(S.L&&!S.L.done)S.paused=!!v;ui()}
+function ov(){S.o={lab:$('#ol').checked,q:$('#oq').checked,tm:$('#ot').checked,dm:$('#od').checked}}
+function status(){const L=S.L;return!L?'IDLE':L.done?'COMPLETE':S.paused?'PAUSED':'RUNNING'}
+function nextT(L){if(!L)return'—';if(L.done)return'run complete';const c=L.c;if(L.st=='G')return L.mode=='fixed'?'amber in '+(c.fg-L.el)+' s':'decision window in '+Math.max(0,c.mn-L.el)+' s; forced end in '+(c.mx-L.el)+' s';if(L.st=='Y')return'all-red in '+(c.am-L.el)+' s';return GN[1-L.g]+' green in '+(c.ar-L.el)+' s'}
+const greenTxt=L=>L.st=='R'?'All red':GN[L.g]+(L.st=='Y'?' (amber)':'');
+/* ---------- rendering ---------- */
+const P=(i,x,y)=>{const t=TH[i];return[300+x*Math.cos(t)-y*Math.sin(t),300+x*Math.sin(t)+y*Math.cos(t)]};
+function draw(cv,L,o){if(S.p3)return draw3d(cv,L,o);const x=cv.getContext('2d');x.clearRect(0,0,600,600);x.fillStyle='#0A1120';x.fillRect(0,0,600,600);x.strokeStyle='rgba(54,123,255,.07)';x.lineWidth=1;for(let i=0;i<600;i+=30){x.beginPath();x.moveTo(i,0);x.lineTo(i,600);x.moveTo(0,i);x.lineTo(600,i);x.stroke()}
+[[24,24],[376,24],[24,376],[376,376]].forEach(([a,b],k)=>{x.fillStyle='#0b1a30';x.fillRect(a+6,b+8,200,200);x.fillStyle='#122340';x.fillRect(a,b,200,200);x.strokeStyle='rgba(0,229,255,.25)';x.strokeRect(a+.5,b+.5,200,200);x.fillStyle='rgba(54,123,255,.35)';for(let i=0;i<176;i+=26)for(let j=0;j<176;j+=26)if((i*7+j*3+k)%5)x.fillRect(a+12+i,b+12+j,10,10)});
+x.fillStyle='#172236';x.fillRect(0,244,600,112);x.fillRect(244,0,112,600);x.fillStyle='#1c2a43';x.fillRect(244,244,112,112);
+x.strokeStyle='#2b4468';x.lineWidth=2;x.beginPath();[[0,244,244,244],[356,244,600,244],[0,356,244,356],[356,356,600,356],[244,0,244,244],[244,356,244,600],[356,0,356,244],[356,356,356,600]].forEach(([a,b,c,d])=>{x.moveTo(a,b);x.lineTo(c,d)});x.stroke();
+x.setLineDash([14,10]);x.strokeStyle='rgba(255,191,71,.7)';x.beginPath();[[0,300,244,300],[356,300,600,300],[300,0,300,244],[300,356,300,600]].forEach(([a,b,c,d])=>{x.moveTo(a,b);x.lineTo(c,d)});x.stroke();x.setLineDash([]);
+const lab=[];
+for(let i=0;i<4;i++){x.save();x.translate(300,300);x.rotate(TH[i]);
+x.fillStyle='rgba(240,246,255,.75)';for(let k=0;k<7;k++)x.fillRect(-74,-56+k*16+2,12,9);x.fillRect(-82,-56,4,56);
+x.fillStyle='#0a0f1a';x.fillRect(-98,-77,32,14);const sg=sig(L,i);
+[['R',-92],['Y',-82],['G',-72]].forEach(([k,px])=>{const on=sg==k;x.beginPath();x.arc(px,-70,4,0,7);x.fillStyle=on?SC[k]:'#1b2538';x.shadowColor=SC[k];x.shadowBlur=on?10:0;x.fill()});x.shadowBlur=0;
+const veh=(v,fx)=>{const len=18+v.id%3*4,col=PAL[v.id%PAL.length];x.save();x.shadowColor=col;x.shadowBlur=6;x.fillStyle=col;x.fillRect(fx-len,-35,len,14);x.shadowBlur=0;x.fillStyle='rgba(0,0,0,.5)';x.fillRect(fx-7,-33,4,10);x.restore();if(o.lab)lab.push([i,fx-len/2,v.id])};
+if(L){L.q[i].forEach(v=>{const d=S.vis[v.id];if(d!=null&&d<=230)veh(v,SX-d)});L.cr.forEach(v=>{if(v.i==i){const p=Math.min(1,Math.max(0,(L.t+S.fr-v.s)/CROSS));veh(v,SX+p*400)}})}
+x.restore()}
+x.textAlign='center';x.fillStyle='#00E5FF';x.font='bold 16px "Segoe UI",sans-serif';
+const pill=(...a)=>pillX(x,...a);
+for(let i=0;i<4;i++){const[a,b]=P(i,-285,-28);x.textAlign='center';x.fillStyle='#00E5FF';x.font='bold 16px "Segoe UI",sans-serif';x.fillText(A[i],a,b+5)}
+lab.forEach(([i,fx,id])=>{const[a,b]=P(i,fx,-28);x.font='8px sans-serif';x.fillStyle='#000';x.textAlign='center';x.fillText('#'+id,a,b+3)});
+if(L){for(let i=0;i<4;i++){const sg=sig(L,i),q=L.q[i].length,t=[A[i]];if(o.q)t.push(q+' queued');if(o.tm)t.push(sg=='G'?'G '+L.el+'s':sg=='Y'?'Y '+(L.c.am-L.el)+'s':'R');const[px,py]=P(i,-140,-92);pill(t.join(' · '),px-(t.join(' · ').length*3),py,SC[sg]||'#fff','l');
+if(o.dm){x.fillStyle='#1b2a44';x.fillRect(px-30,py+9,60,5);x.fillStyle=SC[sg];x.fillRect(px-30,py+9,60*Math.min(1,q/L.c.cap),5)}}}
+const pt=!L?'NO ACTIVE RUN':L.st=='R'?'ALL-RED CLEARANCE':GN[L.g].toUpperCase()+' '+(L.st=='G'?'GREEN':'AMBER');pill('PRIORITY: '+pt,12,18,!L?'#92A5C2':L.st=='R'?SC.R:SC[L.st],'l');
+if(L)pill(L.mode.toUpperCase()+' · t='+L.t+'s / '+L.c.dur+'s · '+status(),12,588,'#00E5FF','l')}
+function pillX(x,t,px,py,c,al){x.font='bold 11px "Segoe UI",sans-serif';const w=x.measureText(t).width+10,l=al=='l'?px:px-w/2;x.fillStyle='rgba(7,11,20,.88)';x.fillRect(l,py-10,w,15);x.fillStyle=c;x.textAlign='left';x.fillText(t,l+5,py+1)}
+function draw3d(cv,L,o){const x=cv.getContext('2d'),cy=Math.cos(S.yaw),sy=Math.sin(S.yaw),cp=Math.cos(S.pit),sp=Math.sin(S.pit);
+const pr=(X,Y,Z)=>{const u=X*cy-Y*sy,r=X*sy+Y*cy,w=760-r*cp-Z*sp,k=600/w;return[300+u*k,330+(r*sp-Z*cp)*k,w,k]};
+const Wd=(i,X,Y)=>{const t=TH[i];return[X*Math.cos(t)-Y*Math.sin(t),X*Math.sin(t)+Y*Math.cos(t)]};
+const quad=(p,c,st)=>{x.beginPath();p.forEach((q,i)=>{const a=pr(...q);i?x.lineTo(a[0],a[1]):x.moveTo(a[0],a[1])});x.closePath();x.fillStyle=c;x.fill();if(st){x.strokeStyle=st;x.lineWidth=1;x.stroke()}};
+const lq=(i,p,c)=>quad(p.map(([a,b])=>[...Wd(i,a,b),0]),c);
+const box=(X,Y,z0,z1,hx,hy,c,st)=>{const C=[[X-hx,Y-hy],[X+hx,Y-hy],[X+hx,Y+hy],[X-hx,Y+hy]],F=C.map((a,i)=>{const b=C[(i+1)%4];return{i,p:[[a[0],a[1],z0],[b[0],b[1],z0],[b[0],b[1],z1],[a[0],a[1],z1]]}});F.forEach(f=>f.w=f.p.reduce((s,q)=>s+pr(...q)[2],0));F.sort((a,b)=>b.w-a.w);F.forEach(f=>{quad(f.p,c);if(f.i%2)quad(f.p,'rgba(0,0,0,.35)')});const T=C.map(a=>[a[0],a[1],z1]);quad(T,c);quad(T,'rgba(255,255,255,.13)',st)};
+x.fillStyle='#0A1120';x.fillRect(0,0,600,600);
+quad([[-330,-330,0],[330,-330,0],[330,330,0],[-330,330,0]],'#0d1626','rgba(54,123,255,.3)');
+quad([[-330,-56,0],[330,-56,0],[330,56,0],[-330,56,0]],'#172236','#2b4468');quad([[-56,-330,0],[56,-330,0],[56,330,0],[-56,330,0]],'#172236','#2b4468');quad([[-56,-56,0],[56,-56,0],[56,56,0],[-56,56,0]],'#1c2a43');
+x.setLineDash([8,7]);x.strokeStyle='rgba(255,191,71,.7)';x.lineWidth=1.5;[[-330,0,-56,0],[56,0,330,0],[0,-330,0,-56],[0,56,0,330]].forEach(([a,b,c,d])=>{const p=pr(a,b,0),q=pr(c,d,0);x.beginPath();x.moveTo(p[0],p[1]);x.lineTo(q[0],q[1]);x.stroke()});x.setLineDash([]);
+for(let i=0;i<4;i++){for(let k=0;k<7;k++){const y=-56+k*16+2;lq(i,[[-74,y],[-62,y],[-62,y+9],[-74,y+9]],'rgba(240,246,255,.8)')}lq(i,[[-82,-56],[-78,-56],[-78,0],[-82,0]],'#F0F6FF')}
+const ob=[],lab=[],add=(X,Y,f)=>ob.push([pr(X,Y,0)[2],f]);
+[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([a,b],k)=>[131,221].forEach((u,m)=>[131,221].forEach((v,n)=>{const h=28+((k*5+m*3+n*7)%5)*16;add(a*u,b*v,()=>box(a*u,b*v,0,h,40,40,'#16294a','rgba(0,229,255,.35)'))})));
+for(let i=0;i<4;i++){const[X,Y]=Wd(i,-74,-70),sg=sig(L,i);add(X,Y,()=>{box(X,Y,0,26,2,2,'#2a3550');box(X,Y,26,52,5,5,'#0a0f1a');[['R',46],['Y',39],['G',32]].forEach(([k,z])=>{const a=pr(X,Y,z),on=sg==k;x.beginPath();x.arc(a[0],a[1],6*a[3],0,7);x.fillStyle=on?SC[k]:'#1b2538';x.shadowColor=SC[k];x.shadowBlur=on?14:0;x.fill();x.shadowBlur=0})})}
+const veh=(i,v,fx)=>{const len=18+v.id%3*4,[X,Y]=Wd(i,fx-len/2,-28),hx=i<2?7:len/2,hy=i<2?len/2:7,col=PAL[v.id%PAL.length];add(X,Y,()=>{box(X,Y,1,8,hx,hy,col);box(X,Y,8,13,hx*.75,hy*.75,'#0b1424');if(o.lab)lab.push([pr(X,Y,18),v.id])})};
+if(L)for(let i=0;i<4;i++){L.q[i].forEach(v=>{const d=S.vis[v.id];if(d!=null&&d<=230)veh(i,v,SX-d)});L.cr.forEach(v=>{if(v.i==i){const q=Math.min(1,Math.max(0,(L.t+S.fr-v.s)/CROSS));veh(i,v,SX+q*400)}})}
+ob.sort((a,b)=>b[0]-a[0]).forEach(a=>a[1]());
+lab.forEach(([p,id])=>{x.font='8px sans-serif';x.fillStyle='#fff';x.textAlign='center';x.fillText('#'+id,p[0],p[1])});
+for(let i=0;i<4;i++){const[X,Y]=Wd(i,-285,-28),a=pr(X,Y,8);x.textAlign='center';x.fillStyle='#00E5FF';x.font='bold 18px "Segoe UI",sans-serif';x.fillText(A[i],a[0],a[1]);
+if(L){const sg=sig(L,i),q=L.q[i].length,t=[A[i]];if(o.q)t.push(q+' queued');if(o.tm)t.push(sg=='G'?'G '+L.el+'s':sg=='Y'?'Y '+(L.c.am-L.el)+'s':'R');const[X2,Y2]=Wd(i,-120,-92),b=pr(X2,Y2,60);pillX(x,t.join(' · '),b[0],b[1],SC[sg]);if(o.dm){x.fillStyle='#1b2a44';x.fillRect(b[0]-30,b[1]+9,60,5);x.fillStyle=SC[sg];x.fillRect(b[0]-30,b[1]+9,60*Math.min(1,q/L.c.cap),5)}}}
+const pt=!L?'NO ACTIVE RUN':L.st=='R'?'ALL-RED CLEARANCE':GN[L.g].toUpperCase()+' '+(L.st=='G'?'GREEN':'AMBER');pillX(x,'PRIORITY: '+pt,12,18,!L?'#92A5C2':L.st=='R'?SC.R:SC[L.st],'l');
+if(L)pillX(x,L.mode.toUpperCase()+' · t='+L.t+'s / '+L.c.dur+'s · '+status(),12,588,'#00E5FF','l')}
+let dg=null;document.addEventListener('pointerdown',e=>{if(e.target.tagName=='CANVAS')dg=e.clientX});document.addEventListener('pointerup',()=>dg=null);document.addEventListener('pointermove',e=>{if(dg!=null){S.yaw+=(e.clientX-dg)*.008;dg=e.clientX}});
+function updVis(dt){const L=S.L;if(!L)return;const k=1-Math.exp(-dt*5);L.q.forEach(q=>q.forEach((v,j)=>{const t=j*28;S.vis[v.id]=v.id in S.vis?S.vis[v.id]+(t-S.vis[v.id])*k:t+300}));L.cr.forEach(v=>delete S.vis[v.id])}
+let last=performance.now(),lu=0;
+function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;const L=S.L;
+if(L&&!L.done&&!S.paused){S.acc+=dt*S.speed;let k=0;while(S.acc>=1&&k++<150&&!L.done){L.step();S.acc--}if(L.done){S.acc=0;if(!L.saved){L.saved=1;addRun(L);msg('Live run complete and saved to history.');if(S.tab==4)renderRes()}}}
+S.fr=L&&!L.done?S.acc:0;updVis(dt);
+for(const[id,tb]of[['cv1',0],['cv2',2],['cvE',-1]]){const c=$('#'+id);if(c&&c.offsetParent)draw(c,S.L,S.ev&&id=='cvE'?{q:1,tm:1,dm:1}:S.o)}
+if(now-lu>200){lu=now;ui()}requestAnimationFrame(loop)}
+/* ---------- UI ---------- */
+const kv=(k,v,c)=>`<div class="kv"><small>${k}</small><b${c?` style="color:${c}"`:''}>${v}</b></div>`;
+const warn=t=>`<div class="p" style="border-color:var(--am)">${t}</div>`;
+function ui(){const L=S.L,m=L?L.m():null,st=status(),busy=L&&!L.done;
+$$('#fm input,#pre').forEach(e=>e.disabled=!!busy);['b1','b2','b3','b4','bs'].forEach(id=>$('#'+id).disabled=!!busy);
+$('#pg').style.width=L?L.t/L.c.dur*100+'%':'0';
+if(S.tab==1){$('#ovc').innerHTML=[['Simulation status',st],['Controller mode',L?L.mode.toUpperCase():'—'],['Simulated time',L?L.t+' s / '+L.c.dur+' s':'—'],['Vehicles waiting',L?m.rem:'—'],['Vehicles served',L?m.served:'—'],['Avg waiting time (served)',L?n1(m.avgW)+' s':'—'],['Max queue length',L?m.maxQ:'—'],['Green direction',L?greenTxt(L):'—'],['Current green duration',L&&L.st=='G'?L.el+' s':'—'],['Next phase transition',nextT(L)],['Total delay accumulated',L?m.totW+' s':'—'],['Completed runs',S.runs.length]].map(a=>kv(...a)).join('');
+$('#ovb').innerHTML=L?NM.map((n,i)=>{const q=L.q[i].length,sg=sig(L,i);return`<div class="br"><span>${n}</span><div class="bar"><i style="width:${q/L.c.cap*100}%"></i></div><em>${q} veh</em><span class="dot" style="background:${SC[sg]}"></span></div>`}).join(''):'<p class="k">No run yet. Start a live run (LIVE VIEW) to see real queues here.</p>'}
+if(S.tab==2||S.tab==3){$('#lk').innerHTML=[['Status',st],['Time',L?L.t+' / '+L.c.dur+' s':'—'],['Waiting',L?m.rem:'—'],['Served',L?m.served:'—'],['Avg wait (s)',L?n1(m.avgW):'—'],['Next',nextT(L)]].map(a=>kv(...a)).join('');
+$('#lg').innerHTML=L?L.log.slice(-40).reverse().map(([t,s])=>`<div><b>${t}s</b> ${s}</div>`).join(''):'Event log is empty until a run starts.';
+$('#rt').textContent='Arrival rates (veh/min): '+['rn','rs','re','rw'].map((id,i)=>A[i]+' '+$('#'+id).value).join(' · ')}
+if(S.ev)evBody()}
+function renderStart(){const R=selfTest();$('#rdy').innerHTML=`<p><b style="color:var(--gr)">${R.filter(r=>r[1]).length}/${R.length}</b> self-checks passed (run now, in your browser)</p>`+R.map(([n,ok])=>`<div><span style="color:${ok?'var(--gr)':'var(--rd)'}">${ok?'●':'✕'}</span> ${n}</div>`).join('');
+$('#wf').innerHTML=[['Configure',1],['Simulate',S.runs.length||S.L],['Compare',pairOf()],['Evidence',S.ev||0],['Report',0]].map(([n,d])=>`<span class="kv" style="color:${d?'var(--gr)':'var(--t2)'}">${d?'✓ ':''}${n}</span>`).join('')}
+function selfTest(){const c={rate:[8,6,14,10],dur:600,seed:7,cap:30,hw:2,fg:30,mn:10,mx:45,am:3,ar:1},sch=schedule(c),f=run('fixed',c,sch),a=run('adaptive',c,sch),f2=run('fixed',c,schedule(c)),fm=f.m(),am=a.m();
+return[['Canvas 2D rendering available',!!document.createElement('canvas').getContext('2d')],['Deterministic: same seed gives identical results',JSON.stringify(fm)==JSON.stringify(f2.m())],['Identical arrivals for both controllers',fm.gen==am.gen&&fm.gen==sch.reduce((s,x)=>s+x.length,0)],['Accounting: generated = served + waiting + blocked',[fm,am].every(m=>m.gen==m.served+m.rem+m.blocked)],['Safety: no vehicle served on red',f.viol+a.viol==0],['Fixed greens equal setting; adaptive greens within min/max',f.gl.every(x=>x[1]==c.fg)&&a.gl.every(x=>x[1]>=c.mn&&x[1]<=c.mx)]]}
+const MR=[['Vehicles generated','gen',0,null,'Accepted arrivals plus blocked arrivals. Identical for both controllers.'],['Vehicles served','served',0,1,'Vehicles that crossed the stop line during green.'],['Vehicles unfinished (still waiting)','rem',0,0,'Vehicles left in queues at run end, reported separately.'],['Blocked by queue capacity','blocked',0,0,'Arrivals rejected because the approach queue was full.'],['Avg wait, served only (s)','avgW',1,0,'Mean of (service start − arrival) over served vehicles only.'],['Median wait, served only (s)','medW',1,0,'Median of the same waits.'],['Avg wait incl. unfinished (s)','avgAll',1,0,'Total waiting ÷ accepted vehicles; unfinished vehicles count their wait up to run end.'],['Max queue length','maxQ',0,0,'Largest single-approach queue observed.'],['Avg total queue','avgQ',1,0,'Mean number of vehicles waiting across all approaches per simulated second.'],['Total accumulated waiting (s)','totW',0,0,'Waits of served vehicles plus wait so far of unfinished vehicles.'],['Throughput (veh/min)','thr',1,1,'Served vehicles ÷ simulated minutes.'],['Avg system time (s)','sys',1,0,'Mean of (departure − arrival); departure = service start + 3 s crossing.'],['Signal phase changes','chg',0,null,'Number of green-phase switches during the run.']];
+const bar=(t,f,a,u)=>{const M=Math.max(f||0,a||0)||1;return`<div class="p"><h3>${t}</h3>${[['Fixed',f,'#FFBF47'],['Adaptive',a,'#00E5FF']].map(([n,v,c])=>`<div class="br"><span>${n}</span><i style="width:${(v||0)/M*70}%;background:${c}"></i><em>${n1(v)} ${u}</em></div>`).join('')}</div>`};
+function line(f,a){const W=600,H=170,M=Math.max(1,...f,...a),N=Math.max(f.length,a.length),st=Math.ceil(N/300);const pl=(s,c)=>`<polyline fill="none" stroke="${c}" stroke-width="1.6" points="${s.map((v,i)=>[i,v]).filter(p=>p[0]%st==0).map(([i,v])=>(i/(N-1||1)*W).toFixed(1)+','+(H-4-v/M*(H-24)).toFixed(1)).join(' ')}"/>`;return`<svg viewBox="0 0 ${W} ${H}" width="100%"><rect width="${W}" height="${H}" fill="#0D1423"/>${pl(f,'#FFBF47')}${pl(a,'#00E5FF')}<text x="6" y="13" fill="#92A5C2" font-size="11">Vehicles waiting over time (amber = fixed, cyan = adaptive). Peak ${M}. Duration ${N} s.</text></svg>`}
+function explain(f,a){const w=imp(f.avgW,a.avgW,false),t=imp(f.thr,a.thr,true),q=imp(f.maxQ,a.maxQ,false),s=[];
+s.push(w==null?'Average wait could not be compared (no vehicles served or zero baseline).':`Adaptive control ${w>=0?'reduced':'increased'} the average wait of served vehicles by ${Math.abs(w).toFixed(1)}% (${n1(f.avgW)} s to ${n1(a.avgW)} s).`);
+if(t!=null)s.push(`Throughput ${t>=0?'rose':'fell'} by ${Math.abs(t).toFixed(1)}% (${n1(f.thr)} to ${n1(a.thr)} veh/min).`);
+if(q!=null)s.push(`Maximum queue ${q>0?'fell':q<0?'grew':'was unchanged'}${q?' by '+Math.abs(q).toFixed(1)+'%':''} (${f.maxQ} to ${a.maxQ}).`);
+s.push(`Unfinished vehicles: ${f.rem} (fixed) versus ${a.rem} (adaptive).`);
+if((w!=null&&w<0)||(t!=null&&t<0))s.push('Fixed timing did better on at least one measure here. Possible reasons: near-balanced demand where equal splits already work, extra amber and all-red lost time from more frequent switching, or green held for a group that had emptied.');
+s.push('This is a simulated result for this one scenario, not a real-world measurement.');return s.join(' ')}
+function tableHTML(f,a,rows){const fm=f&&f.m,am=a&&a.m;return`<table><tr><th>Metric (hover for definition)<th>Fixed<th>Adaptive<th>Adaptive vs fixed`+rows.map(([l,k,d,hb,tip])=>`<tr title="${tip}"><td>${l} ⓘ<td>${fm&&fm[k]!=null?(+fm[k]).toFixed(d):'—'}<td>${am&&am[k]!=null?(+am[k]).toFixed(d):'—'}<td>${fm&&am&&hb!=null?fi(imp(fm[k],am[k],hb==1)):''}`).join('')+`</table>`}
+function renderRes(){const r=S.runs[S.runs.length-1],el=$('#t4');if(!r){el.innerHTML='<h2>RESULTS</h2>'+warn('No completed runs yet. Use SIMULATION, then RUN BOTH &amp; COMPARE. Results appear only from real runs.')+trialsHTML();return}
+const f=pk(r,'fixed'),a=pk(r,'adaptive'),both=f&&a;let h=`<h2>RESULTS</h2><div class="p"><h3>SCENARIO</h3>${label(r.c)} · cap ${r.c.cap} · fixed ${r.c.fg}s · adaptive ${r.c.mn}–${r.c.mx}s · amber ${r.c.am}s · all-red ${r.c.ar}s · headway ${r.c.hw}s</div>`;
+h+=`<div class="p">${tableHTML(f,a,MR)}<p class="k">Green time per group (avg s): ${[f,a].map((x,i)=>x?(i?'Adaptive':'Fixed')+' NS '+n1(x.m.avgG[0])+' / EW '+n1(x.m.avgG[1]):'').join(' · ')}.<br>Average wait “served only” excludes unfinished vehicles; “incl. unfinished” counts them. Improvement = (baseline − adaptive) ÷ baseline × 100, reversed for throughput and served; n/a when the baseline is zero.</p></div>`;
+if(both){h+=`<div class="p"><h3>PLAIN-LANGUAGE SUMMARY</h3>${explain(f.m,a.m)}</div><div class="g2">${bar('Average wait, served (s)',f.m.avgW,a.m.avgW,'s')}${bar('Throughput (veh/min)',f.m.thr,a.m.thr,'veh/min')}${bar('Maximum queue',f.m.maxQ,a.m.maxQ,'veh')}${bar('Avg green per group NS / EW (s)',f.m.avgG[0],a.m.avgG[0],'s NS')}</div><div class="p"><h3>QUEUE LENGTH OVER TIME</h3>${line(f.qs,a.qs)}</div>`}
+else h+=warn('Only one controller has run on this scenario. Run both controllers on the same settings for a paired comparison.');
+el.innerHTML=h+trialsHTML()}
+function runTrials(){const{e,c}=readCfg();if(e.length)return msg(e[0],1);const R=[];for(let k=0;k<10;k++){const cc={...c,seed:c.seed+k},sch=schedule(cc),f=run('fixed',cc,sch).m(),a=run('adaptive',cc,sch).m();R.push({seed:cc.seed,fw:f.avgW,aw:a.avgW,w:imp(f.avgW,a.avgW,false),t:imp(f.thr,a.thr,true)})}S.trials={R,lab:label(c)};renderRes();msg('10 paired trials complete.')}
+function trialsHTML(){const T=S.trials;let h='<div class="p"><h3>MULTI-SEED PAIRED TRIALS</h3><button class="b" onclick="runTrials()">RUN 10 SEEDS (current SIMULATION settings)</button>';
+if(T){const w=T.R.map(x=>x.w).filter(v=>v!=null),n=w.length;if(n){const mu=w.reduce((a,b)=>a+b,0)/n,sd=n>1?Math.sqrt(w.reduce((s,v)=>s+(v-mu)**2,0)/(n-1)):null,wins=w.filter(v=>v>0).length;
+h+=`<p>${T.lab}, seeds ${T.R[0].seed}–${T.R[T.R.length-1].seed}. Completed trials: <b>${n}</b>. Mean avg-wait improvement: <b>${mu.toFixed(1)}%</b>, SD ${n1(sd)} points. Best ${Math.max(...w).toFixed(1)}%, worst ${Math.min(...w).toFixed(1)}%. Adaptive better in ${wins} of ${n} trials (${wins==n?'consistent across tested seeds':wins==0?'never better in these trials':'mixed'}).</p><table><tr><th>Seed<th>Fixed avg wait (s)<th>Adaptive avg wait (s)<th>Wait change<th>Throughput change`+T.R.map(x=>`<tr><td>${x.seed}<td>${n1(x.fw)}<td>${n1(x.aw)}<td>${fi(x.w)}<td>${fi(x.t)}`).join('')+`</table>`}
+h+='<p class="k">Descriptive summary only. No significance test is implemented, so no result is called statistically significant. These are simulated, not real-world, findings.</p>'}return h+'</div>'}
+function renderEvTab(){const L=S.L;$('#e1').textContent=L?'Live run available ('+status()+').':'Start a live run first so vehicles and queues are visible.';$('#e2').textContent=L&&L.mode=='adaptive'&&L.dec?'Adaptive decision recorded at t='+L.dec.t+' s.':'Needs an adaptive live run that has made a switching decision.';$('#e3').textContent=pairOf()?'Completed paired run available.':'Needs a completed fixed and adaptive run on the same scenario.'}
+function openEv(n){S.ev=n;const e=$('#ev');e.hidden=false;e.innerHTML=`<div class="evh"><b>TRAFFIC FLOW OPTIMIZER</b><span>Adaptive Urban Traffic Intelligence System · EVIDENCE VIEW 0${n}</span><span id="evi">Capture with Win+Shift+S (Windows) or your browser's screenshot tool, then press Esc.</span><button class="b" onclick="$('#evi').remove()">HIDE NOTE</button><button class="b" onclick="closeEv()">CLOSE</button></div><div class="evw">${n<3?'<div><div class="cw"><canvas id="cvE" width="600" height="600"></canvas></div></div>':''}<div id="evb"></div></div>`;evBody()}
+function closeEv(){S.ev=0;$('#ev').hidden=true;$('#ev').innerHTML=''}
+function evBody(){const e=$('#evb');if(!e)return;const L=S.L,n=S.ev;let h='';
+if(n==1)h=L?`<div class="g">${kv('Controller mode',L.mode.toUpperCase())}${kv('Status',status())}${kv('Simulated time',L.t+' s / '+L.c.dur+' s')}${kv('Green',greenTxt(L))}</div><div class="g">${NM.map((x,i)=>kv(x+' queue',L.q[i].length+' vehicles',SC[sig(L,i)])).join('')}</div>`:warn('No run is active. Start a live run in LIVE VIEW, let queues build, then prepare this view again.');
+if(n==2){if(!L||L.mode!='adaptive')h=warn('Start an ADAPTIVE live run in LIVE VIEW first.');else if(!L.dec)h=warn('The adaptive controller has not made a switching decision yet. Keep the run going.');else{const d=L.dec;h=`<div class="p"><h3>ADAPTIVE DECISION AT t = ${d.t} s</h3><div class="g">${NM.map((x,i)=>kv(x+' queue',d.q[i])).join('')}${kv('Score NS / EW',d.s.map(v=>v.toFixed(1)).join(' / '))}${kv('Selected group',GN[d.to],SC.G)}${kv('Previous green lasted',d.el+' s')}</div><p><b>Reason:</b> ${d.why}.</p><p class="k">Now (t=${L.t} s): ${greenTxt(L)} · scores NS ${L.sc(0).toFixed(1)} / EW ${L.sc(1).toFixed(1)} · queues ${L.q.map(q=>q.length).join('/')}. This view shows the decision, not a claimed improvement.</p></div>`}}
+if(n==3){const P=pairOf();h=P?`<div class="p"><h3>MEASURED COMPARISON · ${label(P.f.c)}</h3>${tableHTML(P.f,P.a,MR.filter(r=>['served','avgW','maxQ','thr'].includes(r[1])))}<p class="k">Simulated results for this scenario, not real-world measurements.</p></div>`:warn('Run both controllers on the same scenario (SIMULATION → RUN BOTH &amp; COMPARE) first.')}
+e.innerHTML=h}
+function reportText(){const P=pairOf(),r=S.runs[S.runs.length-1];let t='TRAFFIC FLOW OPTIMIZER — SIMULATION REPORT\nGenerated '+new Date().toLocaleString()+'\nAll results are simulated, not real-world measurements.\n\n';
+if(!r)return t+'No completed runs yet.';
+t+='SCENARIO: '+label(r.c)+'\nCapacity '+r.c.cap+' veh/approach · headway '+r.c.hw+' s · fixed green '+r.c.fg+' s · adaptive green '+r.c.mn+'–'+r.c.mx+' s · amber '+r.c.am+' s · all-red '+r.c.ar+' s\n\nASSUMPTIONS: 1 s time step; Bernoulli approximation of Poisson arrivals from a seeded generator; two movement groups; served = crossed stop line; departure = +3 s; no warm-up; both controllers start NS green with empty queues; identical arrivals and rules for both controllers.\n\n';
+const f=pk(r,'fixed'),a=pk(r,'adaptive');
+for(const[l,k,d,hb]of MR)t+=l.padEnd(36)+('Fixed '+(f&&f.m[k]!=null?(+f.m[k]).toFixed(d):'—')).padEnd(18)+('Adaptive '+(a&&a.m[k]!=null?(+a.m[k]).toFixed(d):'—')).padEnd(20)+(P&&hb!=null?(v=>v==null?'n/a':(v>0?'+':'')+v.toFixed(1)+'%')(imp(f.m[k],a.m[k],hb==1)):'')+'\n';
+if(P)t+='\nSUMMARY: '+explain(f.m,a.m)+'\n';if(S.trials)t+='\nTRIALS: '+S.trials.R.length+' paired seeds run (see RESULTS). No significance test implemented.\n';return t}
+function renderRep(){$('#rp').textContent=reportText();$('#hs').innerHTML=S.runs.length?'<table><tr><th>#<th>Mode<th>Scenario<th>Served<th>Avg wait (s)<th>Time'+S.runs.map(r=>`<tr><td>${r.id}<td>${r.mode}<td>${label(r.c)}<td>${r.m.served}<td>${n1(r.m.avgW)}<td>${r.at}`).join('')+'</table>':'<p class="k">No runs yet.</p>'}
+function dl(n,t,ty){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:ty}));a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function expJSON(){if(!S.runs.length)return msg('No completed runs to export yet.',1);dl('traffic-flow-runs.json',JSON.stringify({app:'Traffic Flow Optimizer',exported:new Date().toISOString(),runs:S.runs.map(r=>({id:r.id,mode:r.mode,config:r.c,metrics:r.m})),trials:S.trials},null,1),'application/json')}
+function expCSV(){if(!S.runs.length)return msg('No completed runs to export yet.',1);let t='run,mode,vehicle_id,approach,arrival_s,queue_entry_s,service_start_s,departure_s,wait_s,system_s\n';S.runs.forEach(r=>r.rec.forEach(v=>t+=[r.id,r.mode,v.id,A[v.i],v.a,v.a,v.s,v.d,v.w,v.y].join(',')+'\n'));dl('traffic-flow-vehicles.csv',t,'text/csv')}
+/* ---------- init ---------- */
+const TABS=['START','OVERVIEW','LIVE VIEW','SIMULATION','RESULTS','EVIDENCE STUDIO','REPORTS','SETTINGS','ABOUT'];
+$('#nav').innerHTML='<div class="lg">TRAFFIC<br>FLOW<br>OPTIMIZER</div>'+TABS.map((t,i)=>`<button class="tb" data-i="${i}">${t}</button>`).join('');
+$('#nav').onclick=e=>{const i=e.target.dataset.i;if(i!=null)go(+i)};
+function go(i){S.tab=i;$$('.tab').forEach((s,k)=>s.classList.toggle('on',k==i));$$('.tb').forEach((b,k)=>b.classList.toggle('on',k==i));if(i==0)renderStart();if(i==4)renderRes();if(i==5)renderEvTab();if(i==6)renderRep();scrollTo(0,0);ui()}
+$('#fm').innerHTML=FL.map(([id,l,d,lo,hi,st])=>`<label>${l}<input id="${id}" type="number" value="${d}" min="${lo}" max="${hi}" step="${st}"></label>`).join('');
+$('#pre').onchange=e=>{const p=PRE[e.target.value];if(p)['rn','rs','re','rw'].forEach((id,i)=>$('#'+id).value=p[i]);ui()};
+$('#fm').oninput=()=>{$('#pre').value='';ui()};
+document.onkeydown=e=>{if(e.key=='Escape'&&S.ev)closeEv()};
+go(0);$$('.tb')[0].classList.add('on');requestAnimationFrame(loop);
+</script></body></html>
